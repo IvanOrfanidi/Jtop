@@ -94,7 +94,6 @@ void NCursesDisplay::Display(System& system, int n) {
       newwin(3 + n, x_max - 1, system_window->_maxy + 1, 0);
 
 
-  int counter = 0;
   while (1) {
     init_pair(1, COLOR_BLUE, COLOR_BLACK);
     init_pair(2, COLOR_GREEN, COLOR_BLACK);
@@ -107,13 +106,9 @@ void NCursesDisplay::Display(System& system, int n) {
     refresh();
     std::this_thread::sleep_for(std::chrono::seconds(1));
     
-    //update values every 3s.
-    if (counter == 3){
-      system.Update();
-      counter = 0;
-    } else {
-      counter++;
-    }
+    //update values
+    system.Update();
+  
     
   }
   endwin();

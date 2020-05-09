@@ -20,13 +20,15 @@ class System {
   std::string OperatingSystem();      // TODO: See src/system.cpp
   void Update();
 
-  // TODO: Define any necessary private members
  private:
   Processor cpu_ = {};
   std::vector<Process> processes_ = {};
   std::string os_ = LinuxParser::OperatingSystem();
   std::string kernel_ = LinuxParser::Kernel();
   float memoryUtil_ = LinuxParser::MemoryUtilization(); 
+  long upTime_ = LinuxParser::UpTime();
+  int totalProcs_ = LinuxParser::TotalProcesses();
+  int procsRunning_ = LinuxParser::RunningProcesses();
 };
 
 #endif
