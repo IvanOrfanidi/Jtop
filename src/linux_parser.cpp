@@ -66,7 +66,6 @@ vector<int> LinuxParser::Pids() {
   return pids;
 }
 
-// TODO: Read and return the system memory utilization
 float LinuxParser::MemoryUtilization() { 
   string free, total;
   string garbage;
@@ -90,7 +89,6 @@ float LinuxParser::MemoryUtilization() {
   return -1;
  }
 
-// TODO: Read and return the system uptime
 long LinuxParser::UpTime() { 
   string uptime;
   string line;
@@ -105,21 +103,48 @@ long LinuxParser::UpTime() {
   return 0;
  }
 
-// TODO: Read and return the number of jiffies for the system
-long LinuxParser::Jiffies() { return 0; }
+long LinuxParser::Jiffies() { 
+  auto utilization  = CpuUtilization();
+  long total = 0;
+  //Add up all values besides guest*, since those are already included in the previous columns
+  for (int i = CPUStates::kUser_; i <= CPUStates::kSteal_ ; i++){
+    total += stol(utilization[i]);
+  }
+  return total;
+ }
 
 // TODO: Read and return the number of active jiffies for a PID
 // REMOVE: [[maybe_unused]] once you define the function
 long LinuxParser::ActiveJiffies(int pid[[maybe_unused]]) { return 0; }
 
-// TODO: Read and return the number of active jiffies for the system
-long LinuxParser::ActiveJiffies() { return 0; }
+long LinuxParser::ActiveJiffies() { 
+  return Jiffies() - IdleJiffies();
+ }
 
-// TODO: Read and return the number of idle jiffies for the system
-long LinuxParser::IdleJiffies() { return 0; }
+long LinuxParser::IdleJiffies() { 
+  auto utilization = CpuUtilization();
+  long totalIdleJiffies = stol(utilization[CPUStates::kIOwait_]) + stol(utilization[CPUStates::kIdle_]);
+  return totalIdleJiffies;
+ }
 
-// TODO: Read and return CPU utilization
-vector<string> LinuxParser::CpuUtilization() { return {}; }
+vector<string> LinuxParser::CpuUtilization() { 
+  vector<string> utilization = {};
+  string cpu, line;
+  std::ifstream stream(kProcDirectory + kStatFilename);
+  if (stream.is_open())
+  {
+    std::getline(stream, line);
+    std::istringstream linestream(line);
+    //Remove 'cpu' token.
+    linestream >> cpu;
+    for (int i = 0; i < 10; i++){
+      linestream >> cpu;
+      utilization.push_back(cpu);
+    }
+  }
+  return utilization;
+  
+ }
 
 int LinuxParser::TotalProcesses() { return Pids().size(); }
 
