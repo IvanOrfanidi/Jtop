@@ -29,6 +29,8 @@ class System {
   long upTime_ = LinuxParser::UpTime();
   int totalProcs_ = LinuxParser::TotalProcesses();
   int procsRunning_ = LinuxParser::RunningProcesses();
+  
+  void UpdateProcesses();
 };
 
 #endif

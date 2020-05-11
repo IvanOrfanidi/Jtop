@@ -95,6 +95,9 @@ void NCursesDisplay::Display(System& system, int n) {
 
 
   while (1) {
+    //update values
+    system.Update();
+
     init_pair(1, COLOR_YELLOW, COLOR_BLACK);
     init_pair(2, COLOR_GREEN, COLOR_BLACK);
     box(system_window, 0, 0);
@@ -104,10 +107,9 @@ void NCursesDisplay::Display(System& system, int n) {
     wrefresh(system_window);
     wrefresh(process_window);
     refresh();
-    std::this_thread::sleep_for(std::chrono::seconds(1));
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
     
-    //update values
-    system.Update();
+
   
     
   }

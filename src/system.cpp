@@ -19,12 +19,26 @@ void System::Update() {
     upTime_ = LinuxParser::UpTime();
     totalProcs_ = LinuxParser::TotalProcesses();
     procsRunning_ = LinuxParser::RunningProcesses();
+
+    UpdateProcesses();
 }
 
+void System::UpdateProcesses(){
+    vector<int> pids = LinuxParser::Pids();
+    processes_.clear();
+
+    for (auto const& pid : pids){
+        Process newProcess(pid);
+        processes_.push_back(newProcess);
+    }
+
+    std::sort(processes_.begin(), processes_.end());
+
+    
+}
 // TODO: Return the system's CPU
 Processor& System::Cpu() { return cpu_; }
 
-// TODO: Return a container composed of the system's processes
 vector<Process>& System::Processes() { return processes_; }
 
 std::string System::Kernel() { return kernel_; }
